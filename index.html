@@ -1,4 +1,165 @@
- justify-between items-center text-xs">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ride Pro fix - Fast Bike & Auto Rides</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Leaflet CSS for Real Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            DEFAULT: '#FFC72C',
+                            dark: '#E5B020',
+                            darker: '#111827'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        #map { height: 100%; width: 100%; border-radius: 1rem; }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans antialiased flex items-center justify-center min-h-screen">
+
+    <!-- App Container -->
+    <div class="max-w-md w-full h-[880px] bg-white shadow-2xl relative flex flex-col justify-between overflow-hidden rounded-3xl border-8 border-gray-900">
+
+        <!-- LANGUAGE SELECTION VIEW -->
+        <div id="languageView" class="absolute inset-0 bg-white z-50 p-6 flex flex-col justify-between text-center">
+            <div class="mt-12 space-y-3">
+                <div class="inline-block bg-black text-brand font-black px-4 py-2 rounded-2xl text-2xl tracking-wider shadow-lg">
+                    RIDE PRO <span class="text-white">FIX</span>
+                </div>
+                <h2 class="text-xl font-extrabold text-gray-900 mt-4">Kripya Apni Bhasha Chuniye</h2>
+                <p class="text-xs text-gray-500">Please select your preferred language</p>
+            </div>
+            
+            <div class="space-y-4 my-auto w-full">
+                <button onclick="setLanguage('hi')" class="w-full bg-yellow-100 hover:bg-brand text-black font-extrabold py-4 rounded-2xl border-2 border-brand shadow transition text-lg flex items-center justify-center gap-2">
+                    🇮🇳 हिंदी (Hindi)
+                </button>
+                <button onclick="setLanguage('en')" class="w-full bg-gray-100 hover:bg-gray-200 text-black font-extrabold py-4 rounded-2xl border-2 border-gray-300 shadow transition text-lg flex items-center justify-center gap-2">
+                    🇬🇧 English
+                </button>
+            </div>
+
+            <p class="text-[11px] text-gray-400">Ride Pro fix • Secure Authentication</p>
+        </div>
+
+        <!-- LOGIN / REGISTRATION VIEW WITH SMS SIMULATION -->
+        <div id="loginView" class="hidden absolute inset-0 bg-white z-40 p-6 flex flex-col justify-between">
+            <div class="mt-8 text-center space-y-2">
+                <div class="inline-block bg-black text-brand font-black px-3 py-1.5 rounded-xl text-xl tracking-wider shadow">
+                    RIDE PRO <span class="text-white">FIX</span>
+                </div>
+                <h2 class="text-lg font-extrabold text-gray-900 mt-2">Apna Naam aur Valid Number Darj Karein</h2>
+                <p class="text-xs text-gray-500">Sirf valid 10-digit number par SMS OTP aayega[span_1](start_span)[span_1](end_span)</p>
+            </div>
+            
+            <div class="space-y-3 my-auto">
+                <div>
+                    <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Aapka Naam (User ID)</label>
+                    <div class="flex items-center border-2 border-gray-200 rounded-xl px-3 py-2.5 focus-within:border-brand bg-gray-50">
+                        <i class="fa-solid fa-user text-gray-400 mr-2"></i>
+                        <input type="text" id="userNameInput" placeholder="Jaise: Gyanshu Kumar" class="w-full bg-transparent font-bold outline-none text-sm">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Valid Mobile Number (10 Digits)</label>
+                    <div class="flex items-center border-2 border-gray-200 rounded-xl px-3 py-2.5 focus-within:border-brand bg-gray-50">
+                        <span class="font-bold text-gray-600 mr-2">+91</span>
+                        <input type="tel" id="mobileInput" placeholder="9876543210" maxlength="10" class="w-full bg-transparent font-bold outline-none text-sm">
+                    </div>
+                </div>
+
+                <!-- OTP Input & Resend Option -->
+                <div id="otpContainer" class="hidden space-y-2">
+                    <label class="block text-[11px] font-bold text-green-600 uppercase tracking-wider">SMS Inbox se 4-digit OTP enter karein</label>
+                    <div class="flex items-center border-2 border-green-500 rounded-xl px-3 py-2.5 bg-green-50">
+                        <i class="fa-solid fa-lock text-green-600 mr-2"></i>
+                        <input type="text" id="otpInput" placeholder="Enter SMS OTP" maxlength="4" class="w-full bg-transparent font-bold outline-none text-sm tracking-widest">
+                    </div>
+                    <div class="flex justify-between items-center text-xs pt-1">
+                        <span id="timerText" class="text-gray-400 font-medium">Resend in 30s</span>
+                        <button id="resendBtn" onclick="resendOtp()" class="text-brand-darker font-bold underline cursor-pointer disabled:opacity-50" disabled>Resend OTP</button>
+                    </div>
+                </div>
+
+                <button id="authBtn" onclick="handleAuthAction()" class="w-full bg-brand hover:bg-brand-dark text-black font-extrabold py-3.5 rounded-xl shadow-lg transition text-sm mt-2">
+                    OTP Bhejein (Send OTP)
+                </button>
+            </div>
+
+            <p class="text-[10px] text-center text-gray-400">Bina SMS OTP ke registration sambhav nahi hai[span_2](start_span)[span_2](end_span).</p>
+        </div>
+
+        <!-- Top Header -->
+        <header class="bg-brand px-5 py-3.5 flex items-center justify-between sticky top-0 z-30 shadow-md">
+            <div class="flex items-center space-x-2">
+                <div class="bg-black text-brand font-black px-2 py-1 rounded-lg text-sm tracking-wider">RIDE PRO <span class="text-white">FIX</span></div>
+            </div>
+            <div class="flex items-center space-x-2.5">
+                <button onclick="openWalletModal()" class="bg-black/10 hover:bg-black/25 p-1.5 px-3 rounded-full transition text-black font-semibold text-xs flex items-center gap-1.5">
+                    <i class="fa-solid fa-wallet text-yellow-900"></i> <span id="walletDisplay">₹250</span>
+                </button>
+                <div onclick="openReferralModal()" class="w-9 h-9 bg-black text-brand rounded-full flex items-center justify-center font-bold text-sm shadow cursor-pointer">
+                    <i class="fa-solid fa-gift"></i>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 overflow-y-auto relative pb-20">
+
+            <!-- Booking Dashboard -->
+            <div id="bookingView" class="p-5 space-y-4">
+                <div class="bg-gradient-to-r from-yellow-400 to-amber-500 rounded-2xl p-4 text-black shadow-md flex items-center justify-between">
+                    <div>
+                        <span class="bg-black text-white text-[10px] px-2 py-0.5 rounded-full font-bold uppercase">Swagatam</span>
+                        <h2 class="text-base font-extrabold mt-1" id="displayUserName">User</h2>
+                        <p class="text-xs opacity-90 mt-0.5">Bike ho ya Auto, Pro fix hai na!</p>
+                    </div>
+                    <div class="text-3xl opacity-85 pr-2">
+                        <i class="fa-solid fa-user-check"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm space-y-3 relative">
+                    <div class="absolute left-7 top-10 bottom-10 w-0.5 bg-dashed bg-gray-300"></div>
+
+                    <div class="flex items-center space-x-3 relative z-10">
+                        <div class="w-6 h-6 rounded-full bg-green-500 text-white flex items-center justify-center text-xs shadow">
+                            <i class="fa-solid fa-circle text-[8px]"></i>
+                        </div>
+                        <div class="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2">
+                            <label class="block text-[10px] text-gray-400 uppercase font-bold">Pickup Location</label>
+                            <input type="text" id="pickupInput" value="Hostel / Current Location" class="w-full bg-transparent text-sm font-semibold outline-none text-gray-800">
+                        </div>
+                    </div>
+
+                    <div class="flex items-center space-x-3 relative z-10">
+                        <div class="w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center text-xs shadow">
+                            <i class="fa-solid fa-square text-[8px]"></i>
+                        </div>
+                        <div class="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2">
+                            <label class="block text-[10px] text-gray-400 uppercase font-bold">Drop Location</label>
+                            <input type="text" id="dropInput" placeholder="Kahan jana hai? (Jaise: Station)" oninput="calculateFare()" class="w-full bg-transparent text-sm font-semibold outline-none text-gray-800">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-3 flex justify-between items-center text-xs">
                     <div>
                         <span class="text-gray-500 font-medium">Distance:</span> 
                         <span id="distanceText" class="font-bold text-gray-900">4.5 km</span>
