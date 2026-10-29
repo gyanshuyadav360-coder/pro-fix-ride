@@ -40,8 +40,8 @@
                 <div class="inline-block bg-black text-brand font-black px-4 py-2 rounded-2xl text-2xl tracking-wider shadow-lg">
                     RIDE PRO <span class="text-white">FIX</span>
                 </div>
-                <h2 id="langTitle" class="text-xl font-extrabold text-gray-900 mt-4">Kripya Apni Bhasha Chuniye</h2>
-                <p id="langSub" class="text-xs text-gray-500">Please select your preferred language</p>
+                <h2 class="text-xl font-extrabold text-gray-900 mt-4">Kripya Apni Bhasha Chuniye</h2>
+                <p class="text-xs text-gray-500">Please select your preferred language</p>
             </div>
             
             <div class="space-y-4 my-auto w-full">
@@ -56,14 +56,14 @@
             <p class="text-[11px] text-gray-400">Ride Pro fix • Fast & Safe Rides</p>
         </div>
 
-        <!-- STEP 2: LOGIN / REGISTRATION VIEW (Valid No + User ID + OTP) -->
+        <!-- STEP 2: LOGIN / REGISTRATION VIEW (Valid No + Dynamic OTP + Resend) -->
         <div id="loginView" class="hidden absolute inset-0 bg-white z-40 p-6 flex flex-col justify-between">
             <div class="mt-8 text-center space-y-2">
                 <div class="inline-block bg-black text-brand font-black px-3 py-1.5 rounded-xl text-xl tracking-wider shadow">
                     RIDE PRO <span class="text-white">FIX</span>
                 </div>
-                <h2 id="loginHeading" class="text-lg font-extrabold text-gray-900 mt-2">Apna Naam aur Number Darj Karein</h2>
-                <p class="text-xs text-gray-500">Valid mobile number zaroori hai</p>
+                <h2 id="loginHeading" class="text-lg font-extrabold text-gray-900 mt-2">Apna Naam aur Valid Number Darj Karein</h2>
+                <p class="text-xs text-gray-500">Kewal valid 10-digit mobile number hi manya hai</p>
             </div>
             
             <div class="space-y-3 my-auto">
@@ -78,28 +78,32 @@
 
                 <!-- Valid Mobile Number Field -->
                 <div>
-                    <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Mobile Number (10 Digits)</label>
+                    <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Valid Mobile Number (+91)</label>
                     <div class="flex items-center border-2 border-gray-200 rounded-xl px-3 py-2.5 focus-within:border-brand bg-gray-50">
                         <span class="font-bold text-gray-600 mr-2">+91</span>
                         <input type="tel" id="mobileInput" placeholder="9876543210" maxlength="10" class="w-full bg-transparent font-bold outline-none text-sm">
                     </div>
                 </div>
 
-                <!-- OTP Input (Initially Hidden) -->
-                <div id="otpContainer" class="hidden space-y-1">
-                    <label class="block text-[11px] font-bold text-green-600 uppercase tracking-wider mb-1">OTP Darj Karein (Demo OTP: 1234)</label>
+                <!-- OTP Input & Resend Option (Initially Hidden) -->
+                <div id="otpContainer" class="hidden space-y-2">
+                    <label class="block text-[11px] font-bold text-green-600 uppercase tracking-wider">Aapke number par OTP bheja gaya hai</label>
                     <div class="flex items-center border-2 border-green-500 rounded-xl px-3 py-2.5 bg-green-50">
                         <i class="fa-solid fa-lock text-green-600 mr-2"></i>
                         <input type="text" id="otpInput" placeholder="Enter 4-digit OTP" maxlength="4" class="w-full bg-transparent font-bold outline-none text-sm tracking-widest">
                     </div>
+                    <div class="flex justify-between items-center text-xs pt-1">
+                        <span class="text-gray-400" id="timerText">OTP nahi mila?</span>
+                        <button onclick="resendOtp()" class="text-brand-darker font-bold underline hover:text-black">Resend OTP</button>
+                    </div>
                 </div>
 
                 <button id="authBtn" onclick="handleAuthAction()" class="w-full bg-brand hover:bg-brand-dark text-black font-extrabold py-3.5 rounded-xl shadow-lg transition text-sm mt-2">
-                    OTP Bhejein (Get OTP)
+                    OTP Bhejein (Send OTP)
                 </button>
             </div>
 
-            <p class="text-[10px] text-center text-gray-400">Bina OTP ke registration sambhav nahi hai[span_2](start_span)[span_2](end_span).</p>
+            <p class="text-[10px] text-center text-gray-400">Bina valid OTP ke registration poora nahi hoga.</p>
         </div>
 
         <!-- Top Header -->
@@ -122,12 +126,11 @@
 
             <!-- Booking Dashboard -->
             <div id="bookingView" class="p-5 space-y-4">
-                <!-- Welcome User Card -->
                 <div class="bg-gradient-to-r from-yellow-400 to-amber-500 rounded-2xl p-4 text-black shadow-md flex items-center justify-between">
                     <div>
-                        <span class="bg-black text-white text-[10px] px-2 py-0.5 rounded-full font-bold uppercase" id="welcomeTag">Swagatam</span>
+                        <span class="bg-black text-white text-[10px] px-2 py-0.5 rounded-full font-bold uppercase">Swagatam</span>
                         <h2 class="text-base font-extrabold mt-1" id="displayUserName">User</h2>
-                        <p class="text-xs opacity-90 mt-0.5" id="bannerText">Bike ho ya Auto, Pro fix hai na!</p>
+                        <p class="text-xs opacity-90 mt-0.5">Bike ho ya Auto, Pro fix hai na!</p>
                     </div>
                     <div class="text-3xl opacity-85 pr-2">
                         <i class="fa-solid fa-user-check"></i>
@@ -143,7 +146,7 @@
                             <i class="fa-solid fa-circle text-[8px]"></i>
                         </div>
                         <div class="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2">
-                            <label class="block text-[10px] text-gray-400 uppercase font-bold" id="pickupLabel">Pickup Location</label>
+                            <label class="block text-[10px] text-gray-400 uppercase font-bold">Pickup Location</label>
                             <input type="text" id="pickupInput" value="Hostel / Current Location" class="w-full bg-transparent text-sm font-semibold outline-none text-gray-800">
                         </div>
                     </div>
@@ -153,7 +156,7 @@
                             <i class="fa-solid fa-square text-[8px]"></i>
                         </div>
                         <div class="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2">
-                            <label class="block text-[10px] text-gray-400 uppercase font-bold" id="dropLabel">Drop Location</label>
+                            <label class="block text-[10px] text-gray-400 uppercase font-bold">Drop Location</label>
                             <input type="text" id="dropInput" placeholder="Kahan jana hai? (Jaise: Station)" oninput="calculateFare()" class="w-full bg-transparent text-sm font-semibold outline-none text-gray-800">
                         </div>
                     </div>
@@ -162,7 +165,7 @@
                 <!-- Distance & Rate Info -->
                 <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-3 flex justify-between items-center text-xs">
                     <div>
-                        <span class="text-gray-500 font-medium" id="distLabel">Distance:</span> 
+                        <span class="text-gray-500 font-medium">Distance:</span> 
                         <span id="distanceText" class="font-bold text-gray-900">4.5 km</span>
                     </div>
                     <div>
@@ -173,14 +176,14 @@
 
                 <!-- Ride Selection -->
                 <div>
-                    <h3 class="text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider" id="rideModeLabel">Ride Mode Chuniye</h3>
+                    <h3 class="text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Ride Mode Chuniye</h3>
                     <div class="space-y-3">
                         <div onclick="selectRideMode('Bike', 10)" class="ride-card border-2 border-brand bg-yellow-50/40 rounded-2xl p-3 flex items-center justify-between cursor-pointer transition">
                             <div class="flex items-center space-x-3">
                                 <div class="text-2xl text-gray-800 bg-white p-2 rounded-xl shadow-sm"><i class="fa-solid fa-motorcycle text-brand"></i></div>
                                 <div>
                                     <h4 class="font-extrabold text-sm">Pro Bike</h4>
-                                    <p class="text-[11px] text-gray-500" id="bikeSub">Sabse tez • 2 mins dur</p>
+                                    <p class="text-[11px] text-gray-500">Sabse tez • 2 mins dur</p>
                                 </div>
                             </div>
                             <span class="text-base font-black" id="bikePriceDisplay">₹45</span>
@@ -191,7 +194,7 @@
                                 <div class="text-2xl text-gray-800 bg-gray-100 p-2 rounded-xl shadow-sm"><i class="fa-solid fa-taxi text-yellow-600"></i></div>
                                 <div>
                                     <h4 class="font-extrabold text-sm">Pro Auto</h4>
-                                    <p class="text-[11px] text-gray-500" id="autoSub">Comfortable • 4 mins dur</p>
+                                    <p class="text-[11px] text-gray-500">Comfortable • 4 mins dur</p>
                                 </div>
                             </div>
                             <span class="text-base font-black" id="autoPriceDisplay">₹81</span>
@@ -209,7 +212,7 @@
                     </div>
                 </div>
                 <div>
-                    <h2 class="text-lg font-extrabold" id="searchingTitle">Pro Captain Talash ki ja rahi hai...</h2>
+                    <h2 class="text-lg font-extrabold">Pro Captain Talash ki ja rahi hai...</h2>
                     <p class="text-xs text-gray-500 mt-1">Najdiki drivers connect ho rahe hain</p>
                 </div>
                 <button onclick="cancelSearch()" class="text-red-600 font-bold text-xs bg-red-50 px-5 py-2 rounded-xl">Cancel Karein</button>
@@ -252,7 +255,7 @@
                     <i class="fa-solid fa-check"></i>
                 </div>
                 <div>
-                    <h2 class="text-xl font-black" id="ratingTitle">Safar Safal Raha!</h2>
+                    <h2 class="text-xl font-black">Safar Safal Raha!</h2>
                     <p class="text-xs text-gray-500 mt-1">Captain ko rating dein.</p>
                 </div>
                 <div class="flex justify-center space-x-2 text-2xl text-yellow-400">
@@ -262,7 +265,7 @@
                     <i class="fa-solid fa-star cursor-pointer"></i>
                     <i class="fa-solid fa-star cursor-pointer"></i>
                 </div>
-                <button onclick="resetApp()" class="w-full bg-brand text-black font-bold py-3 rounded-xl" id="homeBtnText">Home Par Wapas Jayein</button>
+                <button onclick="resetApp()" class="w-full bg-brand text-black font-bold py-3 rounded-xl">Home Par Wapas Jayein</button>
             </div>
 
         </main>
@@ -270,11 +273,11 @@
         <!-- Bottom Action Bar -->
         <div id="bottomActionBar" class="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg z-20">
             <div class="flex items-center justify-between mb-2">
-                <span class="text-xs text-gray-500 font-semibold" id="fareLabel">Total Payable Fare</span>
+                <span class="text-xs text-gray-500 font-semibold">Total Payable Fare</span>
                 <span class="text-lg font-black text-gray-900" id="totalFareDisplay">₹45</span>
             </div>
             <button onclick="startSearching()" class="w-full bg-brand hover:bg-brand-dark text-black font-extrabold py-3 rounded-xl shadow transition text-sm">
-                <span id="bookBtnText">Book Pro Bike Now</span>
+                Book Pro Bike Now
             </button>
         </div>
 
@@ -298,6 +301,7 @@
     <script>
         let currentLang = 'hi';
         let isOtpSent = false;
+        let generatedOtp = '';
         let currentMode = 'Bike';
         let ratePerKm = 10;
         let currentDistance = 4.5;
@@ -309,49 +313,55 @@
             currentLang = lang;
             document.getElementById('languageView').classList.add('hidden');
             document.getElementById('loginView').classList.remove('hidden');
-            
-            if(lang === 'en') {
-                document.getElementById('loginHeading').innerText = "Enter Your Name & Mobile Number";
-                document.getElementById('authBtn').innerText = "Send OTP";
-            }
         }
 
+        // Real Dynamic OTP Generator & Valid Number Checker
         function handleAuthAction() {
             const name = document.getElementById('userNameInput').value.trim();
             const mobile = document.getElementById('mobileInput').value.trim();
 
             if(!name) {
-                alert(currentLang === 'hi' ? 'Kripya apna naam (User ID) darj karein!' : 'Please enter your name!');
+                alert('Kripya apna naam (User ID) darj karein!');
                 return;
             }
 
-            // Valid 10-digit mobile number check
-            const mobileRegex = /^[0-9]{10}$/;
-            if(!mobileRegex.test(mobile)) {
-                alert(currentLang === 'hi' ? 'Kripya ek valid 10-digit mobile number enter karein!' : 'Please enter a valid 10-digit mobile number!');
+            // Strict valid Indian mobile number regex (Starts with 6,7,8,9 and total 10 digits)
+            const validMobileRegex = /^[6-9]\d{9}$/;
+            if(!validMobileRegex.test(mobile)) {
+                alert('Kripya ek valid 10-digit mobile number enter karein (jo 6, 7, 8 ya 9 se shuru hota ho)!');
                 return;
             }
 
             if (!isOtpSent) {
-                // Step A: Send OTP stage
+                // Generate a random 4-digit OTP dynamically
+                generatedOtp = Math.floor(1000 + Math.random() * 9000).toString();
                 isOtpSent = true;
+
                 document.getElementById('otpContainer').classList.remove('hidden');
-                document.getElementById('authBtn').innerText = currentLang === 'hi' ? 'Verify OTP & Register' : 'Verify OTP & Register';
-                alert(currentLang === 'hi' ? 'Demo OTP bhej diya gaya hai. Kripya "1234" darj karein.' : 'Demo OTP sent. Please enter "1234".');
+                document.getElementById('authBtn').innerText = 'Verify OTP & Register';
+                
+                // Show simulated SMS alert with the dynamic OTP
+                alert(`[SMS Gateway]: Aapke number +91 ${mobile} par OTP bheja gaya hai. Aapka OTP hai: ${generatedOtp}`);
                 return;
             }
 
-            // Step B: Verify OTP stage (Bina OTP ke aage nahi badhega)
-            const otp = document.getElementById('otpInput').value.trim();
-            if(otp !== '1234') {
-                alert(currentLang === 'hi' ? 'Galat OTP! Kripya sahi OTP (1234) darj karein.' : 'Invalid OTP! Please enter correct OTP (1234).');
+            // Verify entered OTP
+            const enteredOtp = document.getElementById('otpInput').value.trim();
+            if(enteredOtp !== generatedOtp) {
+                alert('Galat OTP! Kripya wahi OTP enter karein jo aapke number par bheja gaya hai.');
                 return;
             }
 
             // Successfully Verified & Registered
             document.getElementById('displayUserName').innerText = name;
             document.getElementById('loginView').classList.add('hidden');
-            alert(currentLang === 'hi' ? 'Registration Safal Rahi! Swagat hai.' : 'Registration Successful! Welcome.');
+            alert('Registration Safal Rahi! Swagat hai Ride Pro fix mein.');
+        }
+
+        // Resend OTP function
+        function resendOtp() {
+            generatedOtp = Math.floor(1000 + Math.random() * 9000).toString();
+            alert(`[Resend SMS]: Naya OTP bhej diya gaya hai. Aapka naya OTP hai: ${generatedOtp}`);
         }
 
         function calculateFare() {
@@ -370,13 +380,12 @@
             currentMode = mode;
             ratePerKm = rate;
             calculateFare();
-            document.getElementById('bookBtnText').innerText = currentLang === 'hi' ? `Book Pro ${mode} Now` : `Book Pro ${mode} Now`;
         }
 
         function startSearching() {
             const drop = document.getElementById('dropInput').value;
             if(!drop) { 
-                alert(currentLang === 'hi' ? 'Kripya drop location enter karein!' : 'Please enter drop location!'); 
+                alert('Kripya drop location enter karein!'); 
                 return; 
             }
 
