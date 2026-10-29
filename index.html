@@ -34,7 +34,7 @@
     <!-- App Container -->
     <div class="max-w-md w-full h-[880px] bg-white shadow-2xl relative flex flex-col justify-between overflow-hidden rounded-3xl border-8 border-gray-900">
 
-        <!-- STEP 1: LANGUAGE SELECTION VIEW -->
+        <!-- LANGUAGE SELECTION VIEW -->
         <div id="languageView" class="absolute inset-0 bg-white z-50 p-6 flex flex-col justify-between text-center">
             <div class="mt-12 space-y-3">
                 <div class="inline-block bg-black text-brand font-black px-4 py-2 rounded-2xl text-2xl tracking-wider shadow-lg">
@@ -53,21 +53,20 @@
                 </button>
             </div>
 
-            <p class="text-[11px] text-gray-400">Ride Pro fix • Fast & Safe Rides</p>
+            <p class="text-[11px] text-gray-400">Ride Pro fix • Secure Authentication</p>
         </div>
 
-        <!-- STEP 2: LOGIN / REGISTRATION VIEW (Valid No + Dynamic OTP + Resend) -->
+        <!-- LOGIN / REGISTRATION VIEW WITH SMS SIMULATION -->
         <div id="loginView" class="hidden absolute inset-0 bg-white z-40 p-6 flex flex-col justify-between">
             <div class="mt-8 text-center space-y-2">
                 <div class="inline-block bg-black text-brand font-black px-3 py-1.5 rounded-xl text-xl tracking-wider shadow">
                     RIDE PRO <span class="text-white">FIX</span>
                 </div>
-                <h2 id="loginHeading" class="text-lg font-extrabold text-gray-900 mt-2">Apna Naam aur Valid Number Darj Karein</h2>
-                <p class="text-xs text-gray-500">Kewal valid 10-digit mobile number hi manya hai</p>
+                <h2 class="text-lg font-extrabold text-gray-900 mt-2">Apna Naam aur Valid Number Darj Karein</h2>
+                <p class="text-xs text-gray-500">Sirf valid 10-digit number par SMS OTP aayega[span_1](start_span)[span_1](end_span)</p>
             </div>
             
             <div class="space-y-3 my-auto">
-                <!-- User ID Field -->
                 <div>
                     <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Aapka Naam (User ID)</label>
                     <div class="flex items-center border-2 border-gray-200 rounded-xl px-3 py-2.5 focus-within:border-brand bg-gray-50">
@@ -76,25 +75,24 @@
                     </div>
                 </div>
 
-                <!-- Valid Mobile Number Field -->
                 <div>
-                    <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Valid Mobile Number (+91)</label>
+                    <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Valid Mobile Number (10 Digits)</label>
                     <div class="flex items-center border-2 border-gray-200 rounded-xl px-3 py-2.5 focus-within:border-brand bg-gray-50">
                         <span class="font-bold text-gray-600 mr-2">+91</span>
                         <input type="tel" id="mobileInput" placeholder="9876543210" maxlength="10" class="w-full bg-transparent font-bold outline-none text-sm">
                     </div>
                 </div>
 
-                <!-- OTP Input & Resend Option (Initially Hidden) -->
+                <!-- OTP Input & Resend Option -->
                 <div id="otpContainer" class="hidden space-y-2">
-                    <label class="block text-[11px] font-bold text-green-600 uppercase tracking-wider">Aapke number par OTP bheja gaya hai</label>
+                    <label class="block text-[11px] font-bold text-green-600 uppercase tracking-wider">SMS Inbox se 4-digit OTP enter karein</label>
                     <div class="flex items-center border-2 border-green-500 rounded-xl px-3 py-2.5 bg-green-50">
                         <i class="fa-solid fa-lock text-green-600 mr-2"></i>
-                        <input type="text" id="otpInput" placeholder="Enter 4-digit OTP" maxlength="4" class="w-full bg-transparent font-bold outline-none text-sm tracking-widest">
+                        <input type="text" id="otpInput" placeholder="Enter SMS OTP" maxlength="4" class="w-full bg-transparent font-bold outline-none text-sm tracking-widest">
                     </div>
                     <div class="flex justify-between items-center text-xs pt-1">
-                        <span class="text-gray-400" id="timerText">OTP nahi mila?</span>
-                        <button onclick="resendOtp()" class="text-brand-darker font-bold underline hover:text-black">Resend OTP</button>
+                        <span id="timerText" class="text-gray-400 font-medium">Resend in 30s</span>
+                        <button id="resendBtn" onclick="resendOtp()" class="text-brand-darker font-bold underline cursor-pointer disabled:opacity-50" disabled>Resend OTP</button>
                     </div>
                 </div>
 
@@ -103,7 +101,7 @@
                 </button>
             </div>
 
-            <p class="text-[10px] text-center text-gray-400">Bina valid OTP ke registration poora nahi hoga.</p>
+            <p class="text-[10px] text-center text-gray-400">Bina SMS OTP ke registration sambhav nahi hai[span_2](start_span)[span_2](end_span).</p>
         </div>
 
         <!-- Top Header -->
@@ -137,7 +135,6 @@
                     </div>
                 </div>
 
-                <!-- Location Inputs -->
                 <div class="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm space-y-3 relative">
                     <div class="absolute left-7 top-10 bottom-10 w-0.5 bg-dashed bg-gray-300"></div>
 
@@ -162,7 +159,6 @@
                     </div>
                 </div>
 
-                <!-- Distance & Rate Info -->
                 <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-3 flex justify-between items-center text-xs">
                     <div>
                         <span class="text-gray-500 font-medium">Distance:</span> 
@@ -174,7 +170,6 @@
                     </div>
                 </div>
 
-                <!-- Ride Selection -->
                 <div>
                     <h3 class="text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Ride Mode Chuniye</h3>
                     <div class="space-y-3">
@@ -186,7 +181,7 @@
                                     <p class="text-[11px] text-gray-500">Sabse tez • 2 mins dur</p>
                                 </div>
                             </div>
-                            <span class="text-base font-black" id="bikePriceDisplay">₹45</span>
+                            <span class="text-base font-black">₹45</span>
                         </div>
 
                         <div onclick="selectRideMode('Auto', 18)" class="ride-card border-2 border-gray-200 bg-white rounded-2xl p-3 flex items-center justify-between cursor-pointer transition">
@@ -197,7 +192,7 @@
                                     <p class="text-[11px] text-gray-500">Comfortable • 4 mins dur</p>
                                 </div>
                             </div>
-                            <span class="text-base font-black" id="autoPriceDisplay">₹81</span>
+                            <span class="text-base font-black">₹81</span>
                         </div>
                     </div>
                 </div>
@@ -277,7 +272,7 @@
                 <span class="text-lg font-black text-gray-900" id="totalFareDisplay">₹45</span>
             </div>
             <button onclick="startSearching()" class="w-full bg-brand hover:bg-brand-dark text-black font-extrabold py-3 rounded-xl shadow transition text-sm">
-                Book Pro Bike Now
+                Book <span id="btnRideName">Pro Bike</span> Now
             </button>
         </div>
 
@@ -302,6 +297,7 @@
         let currentLang = 'hi';
         let isOtpSent = false;
         let generatedOtp = '';
+        let timerInterval;
         let currentMode = 'Bike';
         let ratePerKm = 10;
         let currentDistance = 4.5;
@@ -315,53 +311,76 @@
             document.getElementById('loginView').classList.remove('hidden');
         }
 
-        // Real Dynamic OTP Generator & Valid Number Checker
+        function startOtpTimer() {
+            let timeLeft = 30;
+            document.getElementById('resendBtn').disabled = true;
+            const timerText = document.getElementById('timerText');
+            
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    timerText.innerText = "OTP nahi mila?";
+                    document.getElementById('resendBtn').disabled = false;
+                } else {
+                    timerText.innerText = `Resend in ${timeLeft}s`;
+                    timeLeft -= 1;
+                }
+            }, 1000);
+        }
+
+        function generateAndSendSmsOtp() {
+            // Random 4-digit OTP generate karein
+            generatedOtp = Math.floor(1000 + Math.random() * 9000).toString();
+            isOtpSent = true;
+            
+            document.getElementById('otpContainer').classList.remove('hidden');
+            document.getElementById('authBtn').innerText = currentLang === 'hi' ? 'Verify OTP & Register' : 'Verify OTP & Register';
+            startOtpTimer();
+
+            // Real SMS Inbox Simulation (Console me SMS print hoga taaki aapko pata chale ki SMS aa gaya hai)
+            console.log(`%c[SMS INBOX] Aapka Ride Pro fix OTP hai: ${generatedOtp}`, 'color: #008000; font-weight: bold; font-size: 14px;');
+            alert(currentLang === 'hi' ? 
+                `SMS bhej diya gaya hai aapke mobile par. (Test ke liye Console/F12 check karein ya simulation ke taur par OTP SMS me pahunch chuka hai).` : 
+                `SMS sent to your mobile phone.`);
+        }
+
+        function resendOtp() {
+            generateAndSendSmsOtp();
+        }
+
         function handleAuthAction() {
             const name = document.getElementById('userNameInput').value.trim();
             const mobile = document.getElementById('mobileInput').value.trim();
 
             if(!name) {
-                alert('Kripya apna naam (User ID) darj karein!');
+                alert(currentLang === 'hi' ? 'Kripya apna naam (User ID) darj karein!' : 'Please enter your name!');
                 return;
             }
 
-            // Strict valid Indian mobile number regex (Starts with 6,7,8,9 and total 10 digits)
-            const validMobileRegex = /^[6-9]\d{9}$/;
-            if(!validMobileRegex.test(mobile)) {
-                alert('Kripya ek valid 10-digit mobile number enter karein (jo 6, 7, 8 ya 9 se shuru hota ho)!');
+            // Valid 10-digit mobile number starting with 6-9 check
+            const mobileRegex = /^[6-9]\d{9}$/;
+            if(!mobileRegex.test(mobile)) {
+                alert(currentLang === 'hi' ? 'Kripya ek valid 10-digit mobile number enter karein[span_3](start_span)[span_3](end_span)!' : 'Please enter a valid 10-digit mobile number[span_4](start_span)[span_4](end_span)!');
                 return;
             }
 
             if (!isOtpSent) {
-                // Generate a random 4-digit OTP dynamically
-                generatedOtp = Math.floor(1000 + Math.random() * 9000).toString();
-                isOtpSent = true;
-
-                document.getElementById('otpContainer').classList.remove('hidden');
-                document.getElementById('authBtn').innerText = 'Verify OTP & Register';
-                
-                // Show simulated SMS alert with the dynamic OTP
-                alert(`[SMS Gateway]: Aapke number +91 ${mobile} par OTP bheja gaya hai. Aapka OTP hai: ${generatedOtp}`);
+                generateAndSendSmsOtp();
                 return;
             }
 
-            // Verify entered OTP
+            // User dwara enter kiya gaya OTP verify karna
             const enteredOtp = document.getElementById('otpInput').value.trim();
             if(enteredOtp !== generatedOtp) {
-                alert('Galat OTP! Kripya wahi OTP enter karein jo aapke number par bheja gaya hai.');
+                alert(currentLang === 'hi' ? 'Galat OTP! Kripya SMS se sahi OTP enter karein.' : 'Invalid OTP! Please enter correct OTP from SMS.');
                 return;
             }
 
-            // Successfully Verified & Registered
+            // Successful Verification & Registration
             document.getElementById('displayUserName').innerText = name;
             document.getElementById('loginView').classList.add('hidden');
-            alert('Registration Safal Rahi! Swagat hai Ride Pro fix mein.');
-        }
-
-        // Resend OTP function
-        function resendOtp() {
-            generatedOtp = Math.floor(1000 + Math.random() * 9000).toString();
-            alert(`[Resend SMS]: Naya OTP bhej diya gaya hai. Aapka naya OTP hai: ${generatedOtp}`);
+            alert(currentLang === 'hi' ? 'Registration Safal Rahi! Swagat hai.' : 'Registration Successful! Welcome.');
         }
 
         function calculateFare() {
@@ -380,12 +399,13 @@
             currentMode = mode;
             ratePerKm = rate;
             calculateFare();
+            document.getElementById('btnRideName').innerText = `Pro ${mode}`;
         }
 
         function startSearching() {
             const drop = document.getElementById('dropInput').value;
             if(!drop) { 
-                alert('Kripya drop location enter karein!'); 
+                alert(currentLang === 'hi' ? 'Kripya drop location enter karein!' : 'Please enter drop location!'); 
                 return; 
             }
 
