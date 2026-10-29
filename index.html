@@ -27,6 +27,14 @@
     </script>
     <style>
         #map { height: 100%; width: 100%; border-radius: 1rem; }
+        /* Smooth animation for SMS popup */
+        @keyframes slideDown {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .animate-slide-down {
+            animation: slideDown 0.3s ease-out forwards;
+        }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800 font-sans antialiased flex items-center justify-center min-h-screen">
@@ -34,8 +42,25 @@
     <!-- App Container -->
     <div class="max-w-md w-full h-[880px] bg-white shadow-2xl relative flex flex-col justify-between overflow-hidden rounded-3xl border-8 border-gray-900">
 
+        <!-- REAL SMS NOTIFICATION POPUP (Directly on screen) -->
+        <div id="smsPopup" class="hidden absolute top-4 left-4 right-4 bg-gray-900 text-white p-4 rounded-2xl shadow-2xl z-50 animate-slide-down border border-brand">
+            <div class="flex items-start justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-brand text-black rounded-xl flex items-center justify-center text-lg font-bold">
+                        <i class="fa-solid fa-comment-sms"></i>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-gray-400 font-semibold uppercase">Messages • Abhi abhi</p>
+                        <p class="text-xs font-bold text-yellow-400">Ride Pro fix Verification</p>
+                        <p id="smsMessageText" class="text-xs text-gray-200 mt-0.5">Aapka OTP code hai: <span class="font-black text-white bg-gray-800 px-1.5 py-0.5 rounded" id="popupOtpValue">----</span></p>
+                    </div>
+                </div>
+                <button onclick="closeSmsPopup()" class="text-gray-400 hover:text-white text-sm font-bold px-1">✕</button>
+            </div>
+        </div>
+
         <!-- LANGUAGE SELECTION VIEW -->
-        <div id="languageView" class="absolute inset-0 bg-white z-50 p-6 flex flex-col justify-between text-center">
+        <div id="languageView" class="absolute inset-0 bg-white z-40 p-6 flex flex-col justify-between text-center">
             <div class="mt-12 space-y-3">
                 <div class="inline-block bg-black text-brand font-black px-4 py-2 rounded-2xl text-2xl tracking-wider shadow-lg">
                     RIDE PRO <span class="text-white">FIX</span>
@@ -56,14 +81,14 @@
             <p class="text-[11px] text-gray-400">Ride Pro fix • Secure Authentication</p>
         </div>
 
-        <!-- LOGIN / REGISTRATION VIEW WITH SMS SIMULATION -->
-        <div id="loginView" class="hidden absolute inset-0 bg-white z-40 p-6 flex flex-col justify-between">
+        <!-- LOGIN / REGISTRATION VIEW -->
+        <div id="loginView" class="hidden absolute inset-0 bg-white z-30 p-6 flex flex-col justify-between">
             <div class="mt-8 text-center space-y-2">
                 <div class="inline-block bg-black text-brand font-black px-3 py-1.5 rounded-xl text-xl tracking-wider shadow">
                     RIDE PRO <span class="text-white">FIX</span>
                 </div>
                 <h2 class="text-lg font-extrabold text-gray-900 mt-2">Apna Naam aur Valid Number Darj Karein</h2>
-                <p class="text-xs text-gray-500">Sirf valid 10-digit number par SMS OTP aayega[span_1](start_span)[span_1](end_span)</p>
+                <p class="text-xs text-gray-500">Sirf valid 10-digit number par SMS aayega[span_0](start_span)[span_0](end_span)</p>
             </div>
             
             <div class="space-y-3 my-auto">
@@ -85,10 +110,10 @@
 
                 <!-- OTP Input & Resend Option -->
                 <div id="otpContainer" class="hidden space-y-2">
-                    <label class="block text-[11px] font-bold text-green-600 uppercase tracking-wider">SMS Inbox se 4-digit OTP enter karein</label>
+                    <label class="block text-[11px] font-bold text-green-600 uppercase tracking-wider">Upar SMS notification se OTP enter karein</label>
                     <div class="flex items-center border-2 border-green-500 rounded-xl px-3 py-2.5 bg-green-50">
                         <i class="fa-solid fa-lock text-green-600 mr-2"></i>
-                        <input type="text" id="otpInput" placeholder="Enter SMS OTP" maxlength="4" class="w-full bg-transparent font-bold outline-none text-sm tracking-widest">
+                        <input type="text" id="otpInput" placeholder="4-digit OTP enter karein" maxlength="4" class="w-full bg-transparent font-bold outline-none text-sm tracking-widest">
                     </div>
                     <div class="flex justify-between items-center text-xs pt-1">
                         <span id="timerText" class="text-gray-400 font-medium">Resend in 30s</span>
@@ -101,11 +126,11 @@
                 </button>
             </div>
 
-            <p class="text-[10px] text-center text-gray-400">Bina SMS OTP ke registration sambhav nahi hai[span_2](start_span)[span_2](end_span).</p>
+            <p class="text-[10px] text-center text-gray-400">Bina SMS OTP ke registration sambhav nahi hai[span_1](start_span)[span_1](end_span).</p>
         </div>
 
         <!-- Top Header -->
-        <header class="bg-brand px-5 py-3.5 flex items-center justify-between sticky top-0 z-30 shadow-md">
+        <header class="bg-brand px-5 py-3.5 flex items-center justify-between sticky top-0 z-20 shadow-md">
             <div class="flex items-center space-x-2">
                 <div class="bg-black text-brand font-black px-2 py-1 rounded-lg text-sm tracking-wider">RIDE PRO <span class="text-white">FIX</span></div>
             </div>
@@ -338,11 +363,13 @@
             document.getElementById('authBtn').innerText = currentLang === 'hi' ? 'Verify OTP & Register' : 'Verify OTP & Register';
             startOtpTimer();
 
-            // Real SMS Inbox Simulation (Console me SMS print hoga taaki aapko pata chale ki SMS aa gaya hai)
-            console.log(`%c[SMS INBOX] Aapka Ride Pro fix OTP hai: ${generatedOtp}`, 'color: #008000; font-weight: bold; font-size: 14px;');
-            alert(currentLang === 'hi' ? 
-                `SMS bhej diya gaya hai aapke mobile par. (Test ke liye Console/F12 check karein ya simulation ke taur par OTP SMS me pahunch chuka hai).` : 
-                `SMS sent to your mobile phone.`);
+            // Display OTP directly on screen via SMS Notification Popup banner
+            document.getElementById('popupOtpValue').innerText = generatedOtp;
+            document.getElementById('smsPopup').classList.remove('hidden');
+        }
+
+        function closeSmsPopup() {
+            document.getElementById('smsPopup').classList.add('hidden');
         }
 
         function resendOtp() {
@@ -361,7 +388,7 @@
             // Valid 10-digit mobile number starting with 6-9 check
             const mobileRegex = /^[6-9]\d{9}$/;
             if(!mobileRegex.test(mobile)) {
-                alert(currentLang === 'hi' ? 'Kripya ek valid 10-digit mobile number enter karein[span_3](start_span)[span_3](end_span)!' : 'Please enter a valid 10-digit mobile number[span_4](start_span)[span_4](end_span)!');
+                alert(currentLang === 'hi' ? 'Kripya ek valid 10-digit mobile number enter karein[span_2](start_span)[span_2](end_span)!' : 'Please enter a valid 10-digit mobile number[span_3](start_span)[span_3](end_span)!');
                 return;
             }
 
@@ -373,9 +400,12 @@
             // User dwara enter kiya gaya OTP verify karna
             const enteredOtp = document.getElementById('otpInput').value.trim();
             if(enteredOtp !== generatedOtp) {
-                alert(currentLang === 'hi' ? 'Galat OTP! Kripya SMS se sahi OTP enter karein.' : 'Invalid OTP! Please enter correct OTP from SMS.');
+                alert(currentLang === 'hi' ? 'Galat OTP! Kripya SMS popup se sahi OTP enter karein.' : 'Invalid OTP! Please enter correct OTP from SMS popup.');
                 return;
             }
+
+            // Close SMS popup if open
+            closeSmsPopup();
 
             // Successful Verification & Registration
             document.getElementById('displayUserName').innerText = name;
