@@ -16,7 +16,7 @@
                 extend: {
                     colors: {
                         brand: {
-                            DEFAULT: '#FFC72C', // Ride Pro fix Yellow Accent
+                            DEFAULT: '#FFC72C',
                             dark: '#E5B020',
                             darker: '#111827'
                         }
@@ -31,31 +31,75 @@
 </head>
 <body class="bg-gray-100 text-gray-800 font-sans antialiased flex items-center justify-center min-h-screen">
 
-    <!-- App Container (Mobile Frame Style) -->
+    <!-- App Container -->
     <div class="max-w-md w-full h-[880px] bg-white shadow-2xl relative flex flex-col justify-between overflow-hidden rounded-3xl border-8 border-gray-900">
 
-        <!-- 1. Login / Auth View -->
-        <div id="loginView" class="absolute inset-0 bg-white z-50 p-6 flex flex-col justify-between">
-            <div class="mt-12 text-center space-y-3">
+        <!-- STEP 1: LANGUAGE SELECTION VIEW -->
+        <div id="languageView" class="absolute inset-0 bg-white z-50 p-6 flex flex-col justify-between text-center">
+            <div class="mt-12 space-y-3">
                 <div class="inline-block bg-black text-brand font-black px-4 py-2 rounded-2xl text-2xl tracking-wider shadow-lg">
                     RIDE PRO <span class="text-white">FIX</span>
                 </div>
-                <h2 class="text-xl font-extrabold text-gray-900 mt-4">Bike ho ya Auto, Pro fix hai na!</h2>
-                <p class="text-xs text-gray-500">Fastest Bike, Auto & Parcel Booking Platform</p>
+                <h2 id="langTitle" class="text-xl font-extrabold text-gray-900 mt-4">Kripya Apni Bhasha Chuniye</h2>
+                <p id="langSub" class="text-xs text-gray-500">Please select your preferred language</p>
             </div>
             
-            <div class="space-y-4 my-auto">
-                <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider">Mobile Number se Login karein</label>
-                <div class="flex items-center border-2 border-gray-200 rounded-2xl px-4 py-3 focus-within:border-brand bg-gray-50">
-                    <span class="font-bold text-gray-600 mr-2">+91</span>
-                    <input type="tel" id="mobileInput" placeholder="98765 43210" maxlength="10" class="w-full bg-transparent font-bold outline-none text-lg">
-                </div>
-                <button onclick="handleLogin()" class="w-full bg-brand hover:bg-brand-dark text-black font-extrabold py-4 rounded-2xl shadow-lg transition text-base">
-                    OTP ke sath Aage Badhein
+            <div class="space-y-4 my-auto w-full">
+                <button onclick="setLanguage('hi')" class="w-full bg-yellow-100 hover:bg-brand text-black font-extrabold py-4 rounded-2xl border-2 border-brand shadow transition text-lg flex items-center justify-center gap-2">
+                    🇮🇳 हिंदी (Hindi)
+                </button>
+                <button onclick="setLanguage('en')" class="w-full bg-gray-100 hover:bg-gray-200 text-black font-extrabold py-4 rounded-2xl border-2 border-gray-300 shadow transition text-lg flex items-center justify-center gap-2">
+                    🇬🇧 English
                 </button>
             </div>
 
-            <p class="text-[11px] text-center text-gray-400">Aage badhkar aap Ride Pro fix ke Terms & Privacy Policy se sahamat hain.</p>
+            <p class="text-[11px] text-gray-400">Ride Pro fix • Fast & Safe Rides</p>
+        </div>
+
+        <!-- STEP 2: LOGIN / REGISTRATION VIEW (Valid No + User ID + OTP) -->
+        <div id="loginView" class="hidden absolute inset-0 bg-white z-40 p-6 flex flex-col justify-between">
+            <div class="mt-8 text-center space-y-2">
+                <div class="inline-block bg-black text-brand font-black px-3 py-1.5 rounded-xl text-xl tracking-wider shadow">
+                    RIDE PRO <span class="text-white">FIX</span>
+                </div>
+                <h2 id="loginHeading" class="text-lg font-extrabold text-gray-900 mt-2">Apna Naam aur Number Darj Karein</h2>
+                <p class="text-xs text-gray-500">Valid mobile number zaroori hai</p>
+            </div>
+            
+            <div class="space-y-3 my-auto">
+                <!-- User ID Field -->
+                <div>
+                    <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Aapka Naam (User ID)</label>
+                    <div class="flex items-center border-2 border-gray-200 rounded-xl px-3 py-2.5 focus-within:border-brand bg-gray-50">
+                        <i class="fa-solid fa-user text-gray-400 mr-2"></i>
+                        <input type="text" id="userNameInput" placeholder="Jaise: Gyanshu Kumar" class="w-full bg-transparent font-bold outline-none text-sm">
+                    </div>
+                </div>
+
+                <!-- Valid Mobile Number Field -->
+                <div>
+                    <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Mobile Number (10 Digits)</label>
+                    <div class="flex items-center border-2 border-gray-200 rounded-xl px-3 py-2.5 focus-within:border-brand bg-gray-50">
+                        <span class="font-bold text-gray-600 mr-2">+91</span>
+                        <input type="tel" id="mobileInput" placeholder="9876543210" maxlength="10" class="w-full bg-transparent font-bold outline-none text-sm">
+                    </div>
+                </div>
+
+                <!-- OTP Input (Initially Hidden) -->
+                <div id="otpContainer" class="hidden space-y-1">
+                    <label class="block text-[11px] font-bold text-green-600 uppercase tracking-wider mb-1">OTP Darj Karein (Demo OTP: 1234)</label>
+                    <div class="flex items-center border-2 border-green-500 rounded-xl px-3 py-2.5 bg-green-50">
+                        <i class="fa-solid fa-lock text-green-600 mr-2"></i>
+                        <input type="text" id="otpInput" placeholder="Enter 4-digit OTP" maxlength="4" class="w-full bg-transparent font-bold outline-none text-sm tracking-widest">
+                    </div>
+                </div>
+
+                <button id="authBtn" onclick="handleAuthAction()" class="w-full bg-brand hover:bg-brand-dark text-black font-extrabold py-3.5 rounded-xl shadow-lg transition text-sm mt-2">
+                    OTP Bhejein (Get OTP)
+                </button>
+            </div>
+
+            <p class="text-[10px] text-center text-gray-400">Bina OTP ke registration sambhav nahi hai[span_2](start_span)[span_2](end_span).</p>
         </div>
 
         <!-- Top Header -->
@@ -64,12 +108,10 @@
                 <div class="bg-black text-brand font-black px-2 py-1 rounded-lg text-sm tracking-wider">RIDE PRO <span class="text-white">FIX</span></div>
             </div>
             <div class="flex items-center space-x-2.5">
-                <!-- Wallet Button -->
                 <button onclick="openWalletModal()" class="bg-black/10 hover:bg-black/25 p-1.5 px-3 rounded-full transition text-black font-semibold text-xs flex items-center gap-1.5">
                     <i class="fa-solid fa-wallet text-yellow-900"></i> <span id="walletDisplay">₹250</span>
                 </button>
-                <!-- Profile / Referral Button -->
-                <div onclick="openReferralModal()" class="w-9 h-9 bg-black text-brand rounded-full flex items-center justify-center font-bold text-sm shadow cursor-pointer" title="Refer & Earn">
+                <div onclick="openReferralModal()" class="w-9 h-9 bg-black text-brand rounded-full flex items-center justify-center font-bold text-sm shadow cursor-pointer">
                     <i class="fa-solid fa-gift"></i>
                 </div>
             </div>
@@ -78,69 +120,67 @@
         <!-- Main Content Area -->
         <main class="flex-1 overflow-y-auto relative pb-20">
 
-            <!-- View 2: Booking Dashboard -->
+            <!-- Booking Dashboard -->
             <div id="bookingView" class="p-5 space-y-4">
-                <!-- Promo Banner -->
+                <!-- Welcome User Card -->
                 <div class="bg-gradient-to-r from-yellow-400 to-amber-500 rounded-2xl p-4 text-black shadow-md flex items-center justify-between">
                     <div>
-                        <span class="bg-black text-white text-[10px] px-2 py-0.5 rounded-full font-bold uppercase">Super Offer</span>
-                        <h2 class="text-base font-extrabold mt-1">Pehli 3 Rides par 50% Off!</h2>
-                        <p class="text-xs opacity-90 mt-0.5">Code: <span class="font-bold underline">PROFIX50</span></p>
+                        <span class="bg-black text-white text-[10px] px-2 py-0.5 rounded-full font-bold uppercase" id="welcomeTag">Swagatam</span>
+                        <h2 class="text-base font-extrabold mt-1" id="displayUserName">User</h2>
+                        <p class="text-xs opacity-90 mt-0.5" id="bannerText">Bike ho ya Auto, Pro fix hai na!</p>
                     </div>
                     <div class="text-3xl opacity-85 pr-2">
-                        <i class="fa-solid fa-motorcycle"></i>
+                        <i class="fa-solid fa-user-check"></i>
                     </div>
                 </div>
 
-                <!-- Location Inputs with Distance Calculator Feature -->
+                <!-- Location Inputs -->
                 <div class="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm space-y-3 relative">
                     <div class="absolute left-7 top-10 bottom-10 w-0.5 bg-dashed bg-gray-300"></div>
 
-                    <!-- Pickup -->
                     <div class="flex items-center space-x-3 relative z-10">
                         <div class="w-6 h-6 rounded-full bg-green-500 text-white flex items-center justify-center text-xs shadow">
                             <i class="fa-solid fa-circle text-[8px]"></i>
                         </div>
                         <div class="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2">
-                            <label class="block text-[10px] text-gray-400 uppercase font-bold">Pickup Location</label>
+                            <label class="block text-[10px] text-gray-400 uppercase font-bold" id="pickupLabel">Pickup Location</label>
                             <input type="text" id="pickupInput" value="Hostel / Current Location" class="w-full bg-transparent text-sm font-semibold outline-none text-gray-800">
                         </div>
                     </div>
 
-                    <!-- Drop -->
                     <div class="flex items-center space-x-3 relative z-10">
                         <div class="w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center text-xs shadow">
                             <i class="fa-solid fa-square text-[8px]"></i>
                         </div>
                         <div class="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2">
-                            <label class="block text-[10px] text-gray-400 uppercase font-bold">Drop Location</label>
-                            <input type="text" id="dropInput" placeholder="Kahan jana hai? (Jaise: Station, Market)" oninput="calculateFare()" class="w-full bg-transparent text-sm font-semibold outline-none text-gray-800">
+                            <label class="block text-[10px] text-gray-400 uppercase font-bold" id="dropLabel">Drop Location</label>
+                            <input type="text" id="dropInput" placeholder="Kahan jana hai? (Jaise: Station)" oninput="calculateFare()" class="w-full bg-transparent text-sm font-semibold outline-none text-gray-800">
                         </div>
                     </div>
                 </div>
 
-                <!-- Distance & Per KM Info Box -->
+                <!-- Distance & Rate Info -->
                 <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-3 flex justify-between items-center text-xs">
                     <div>
-                        <span class="text-gray-500 font-medium">Estimated Distance:</span> 
+                        <span class="text-gray-500 font-medium" id="distLabel">Distance:</span> 
                         <span id="distanceText" class="font-bold text-gray-900">4.5 km</span>
                     </div>
                     <div>
                         <span class="text-gray-500 font-medium">Rate:</span> 
-                        <span class="font-bold text-gray-900">₹10/km (Bike)</span>
+                        <span class="font-bold text-gray-900">₹10/km</span>
                     </div>
                 </div>
 
                 <!-- Ride Selection -->
                 <div>
-                    <h3 class="text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Ride Mode Chuniye</h3>
-                    <div class="space-y-3" id="rideOptionsList">
+                    <h3 class="text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider" id="rideModeLabel">Ride Mode Chuniye</h3>
+                    <div class="space-y-3">
                         <div onclick="selectRideMode('Bike', 10)" class="ride-card border-2 border-brand bg-yellow-50/40 rounded-2xl p-3 flex items-center justify-between cursor-pointer transition">
                             <div class="flex items-center space-x-3">
                                 <div class="text-2xl text-gray-800 bg-white p-2 rounded-xl shadow-sm"><i class="fa-solid fa-motorcycle text-brand"></i></div>
                                 <div>
-                                    <h4 class="font-extrabold text-sm">Pro Bike (₹10/km)</h4>
-                                    <p class="text-[11px] text-gray-500">Sabse tez • 2 mins dur</p>
+                                    <h4 class="font-extrabold text-sm">Pro Bike</h4>
+                                    <p class="text-[11px] text-gray-500" id="bikeSub">Sabse tez • 2 mins dur</p>
                                 </div>
                             </div>
                             <span class="text-base font-black" id="bikePriceDisplay">₹45</span>
@@ -150,8 +190,8 @@
                             <div class="flex items-center space-x-3">
                                 <div class="text-2xl text-gray-800 bg-gray-100 p-2 rounded-xl shadow-sm"><i class="fa-solid fa-taxi text-yellow-600"></i></div>
                                 <div>
-                                    <h4 class="font-extrabold text-sm">Pro Auto (₹18/km)</h4>
-                                    <p class="text-[11px] text-gray-500">Comfortable • 4 mins dur</p>
+                                    <h4 class="font-extrabold text-sm">Pro Auto</h4>
+                                    <p class="text-[11px] text-gray-500" id="autoSub">Comfortable • 4 mins dur</p>
                                 </div>
                             </div>
                             <span class="text-base font-black" id="autoPriceDisplay">₹81</span>
@@ -160,7 +200,7 @@
                 </div>
             </div>
 
-            <!-- View 3: Searching Driver View -->
+            <!-- Searching Driver View -->
             <div id="searchingView" class="hidden p-8 flex flex-col items-center justify-center text-center space-y-6 my-10">
                 <div class="relative w-28 h-28 flex items-center justify-center">
                     <div class="absolute inset-0 rounded-full border-4 border-yellow-200 animate-ping"></div>
@@ -169,13 +209,13 @@
                     </div>
                 </div>
                 <div>
-                    <h2 class="text-lg font-extrabold">Pro Captain Talash ki ja rahi hai...</h2>
+                    <h2 class="text-lg font-extrabold" id="searchingTitle">Pro Captain Talash ki ja rahi hai...</h2>
                     <p class="text-xs text-gray-500 mt-1">Najdiki drivers connect ho rahe hain</p>
                 </div>
                 <button onclick="cancelSearch()" class="text-red-600 font-bold text-xs bg-red-50 px-5 py-2 rounded-xl">Cancel Karein</button>
             </div>
 
-            <!-- View 4: Active Ride Screen with Leaflet Map -->
+            <!-- Active Ride Screen -->
             <div id="activeRideView" class="hidden p-4 space-y-3">
                 <div class="bg-black text-white rounded-2xl p-4 shadow-xl">
                     <div class="flex items-center space-x-3">
@@ -192,30 +232,28 @@
                         </div>
                         <div class="flex space-x-2">
                             <a href="tel:9876543210" class="w-9 h-9 bg-gray-800 text-white rounded-full flex items-center justify-center"><i class="fa-solid fa-phone text-xs"></i></a>
-                            <button onclick="alert('Chat: Captain ne kaha hai - Main 2 minute me pahunch raha hoon!')" class="w-9 h-9 bg-brand text-black rounded-full flex items-center justify-center font-bold"><i class="fa-solid fa-comment text-xs"></i></button>
+                            <button onclick="alert('Chat: Captain pahunch raha hai!')" class="w-9 h-9 bg-brand text-black rounded-full flex items-center justify-center font-bold"><i class="fa-solid fa-comment text-xs"></i></button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Real Interactive Map -->
                 <div class="h-44 rounded-2xl overflow-hidden shadow-inner border border-gray-300 relative">
                     <div id="map"></div>
                 </div>
 
-                <!-- Complete Ride Button -->
                 <button onclick="completeRide()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl shadow transition text-sm">
                     Ride Puri Hui & Pay Karein
                 </button>
             </div>
 
-            <!-- View 5: Rating Screen -->
+            <!-- Rating Screen -->
             <div id="ratingView" class="hidden p-6 text-center space-y-5 my-10">
                 <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto text-2xl shadow">
                     <i class="fa-solid fa-check"></i>
                 </div>
                 <div>
-                    <h2 class="text-xl font-black">Safar Safal Raha!</h2>
-                    <p class="text-xs text-gray-500 mt-1">Captain ko rating dein aur agla safar behtar banayein.</p>
+                    <h2 class="text-xl font-black" id="ratingTitle">Safar Safal Raha!</h2>
+                    <p class="text-xs text-gray-500 mt-1">Captain ko rating dein.</p>
                 </div>
                 <div class="flex justify-center space-x-2 text-2xl text-yellow-400">
                     <i class="fa-solid fa-star cursor-pointer"></i>
@@ -224,7 +262,7 @@
                     <i class="fa-solid fa-star cursor-pointer"></i>
                     <i class="fa-solid fa-star cursor-pointer"></i>
                 </div>
-                <button onclick="resetApp()" class="w-full bg-brand text-black font-bold py-3 rounded-xl">Home Par Wapas Jayein</button>
+                <button onclick="resetApp()" class="w-full bg-brand text-black font-bold py-3 rounded-xl" id="homeBtnText">Home Par Wapas Jayein</button>
             </div>
 
         </main>
@@ -232,102 +270,115 @@
         <!-- Bottom Action Bar -->
         <div id="bottomActionBar" class="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg z-20">
             <div class="flex items-center justify-between mb-2">
-                <span class="text-xs text-gray-500 font-semibold">Total Payable Fare</span>
+                <span class="text-xs text-gray-500 font-semibold" id="fareLabel">Total Payable Fare</span>
                 <span class="text-lg font-black text-gray-900" id="totalFareDisplay">₹45</span>
             </div>
             <button onclick="startSearching()" class="w-full bg-brand hover:bg-brand-dark text-black font-extrabold py-3 rounded-xl shadow transition text-sm">
-                Book <span id="btnRideName">Pro Bike</span> Now
+                <span id="bookBtnText">Book Pro Bike Now</span>
             </button>
         </div>
 
     </div>
 
-    <!-- WALLET MODAL -->
+    <!-- Modals -->
     <div id="walletModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl p-6 w-full max-w-xs space-y-4 shadow-2xl">
             <h3 class="text-base font-bold text-gray-900">Pro fix Wallet</h3>
             <div class="bg-gray-50 p-4 rounded-xl text-center border">
-                <p class="text-xs text-gray-500">Available Balance</p>
+                <p class="text-xs text-gray-500">Balance</p>
                 <p class="text-2xl font-black text-brand-darker mt-1" id="walletModalBalance">₹250</p>
             </div>
-            <button onclick="addMoney()" class="w-full bg-brand text-black font-bold py-2.5 rounded-xl text-xs">Add ₹100 to Wallet</button>
+            <button onclick="addMoney()" class="w-full bg-brand text-black font-bold py-2.5 rounded-xl text-xs">Add ₹100</button>
             <button onclick="closeWalletModal()" class="w-full bg-gray-200 text-gray-800 font-bold py-2 rounded-xl text-xs">Close</button>
         </div>
     </div>
 
-    <!-- REFERRAL MODAL -->
-    <div id="referralModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl p-6 w-full max-w-xs space-y-4 shadow-2xl text-center">
-            <div class="w-12 h-12 bg-yellow-100 text-yellow-700 rounded-full flex items-center justify-center mx-auto text-xl">
-                <i class="fa-solid fa-gift"></i>
-            </div>
-            <h3 class="text-base font-bold text-gray-900">Refer & Earn ₹50!</h3>
-            <p class="text-xs text-gray-500">Apne dosto ko Ride Pro fix invite karein aur har successful ride par ₹50 payein.</p>
-            <div class="bg-gray-100 border border-dashed border-gray-400 p-2.5 rounded-xl font-mono text-sm font-bold tracking-wider text-brand-darker">
-                PROFIX99
-            </div>
-            <button onclick="alert('Referral link copied to clipboard! Share it with friends.')" class="w-full bg-brand text-black font-bold py-2.5 rounded-xl text-xs">Share Link</button>
-            <button onclick="closeReferralModal()" class="w-full bg-gray-200 text-gray-800 font-bold py-2 rounded-xl text-xs">Close</button>
-        </div>
-    </div>
-
-    <!-- Leaflet JS for Map -->
+    <!-- Script Logic -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
+        let currentLang = 'hi';
+        let isOtpSent = false;
         let currentMode = 'Bike';
         let ratePerKm = 10;
-        let currentDistance = 4.5; // default km
+        let currentDistance = 4.5;
         let calculatedFare = 45;
         let userWallet = 250;
         let map;
 
-        function handleLogin() {
-            const num = document.getElementById('mobileInput').value;
-            if(num.length < 10) {
-                alert('Kripya sahi 10-digit mobile number enter karein!');
-                return;
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.getElementById('languageView').classList.add('hidden');
+            document.getElementById('loginView').classList.remove('hidden');
+            
+            if(lang === 'en') {
+                document.getElementById('loginHeading').innerText = "Enter Your Name & Mobile Number";
+                document.getElementById('authBtn').innerText = "Send OTP";
             }
-            document.getElementById('loginView').classList.add('hidden');
         }
 
-        // Per Kilometer Fare Calculator Logic
+        function handleAuthAction() {
+            const name = document.getElementById('userNameInput').value.trim();
+            const mobile = document.getElementById('mobileInput').value.trim();
+
+            if(!name) {
+                alert(currentLang === 'hi' ? 'Kripya apna naam (User ID) darj karein!' : 'Please enter your name!');
+                return;
+            }
+
+            // Valid 10-digit mobile number check
+            const mobileRegex = /^[0-9]{10}$/;
+            if(!mobileRegex.test(mobile)) {
+                alert(currentLang === 'hi' ? 'Kripya ek valid 10-digit mobile number enter karein!' : 'Please enter a valid 10-digit mobile number!');
+                return;
+            }
+
+            if (!isOtpSent) {
+                // Step A: Send OTP stage
+                isOtpSent = true;
+                document.getElementById('otpContainer').classList.remove('hidden');
+                document.getElementById('authBtn').innerText = currentLang === 'hi' ? 'Verify OTP & Register' : 'Verify OTP & Register';
+                alert(currentLang === 'hi' ? 'Demo OTP bhej diya gaya hai. Kripya "1234" darj karein.' : 'Demo OTP sent. Please enter "1234".');
+                return;
+            }
+
+            // Step B: Verify OTP stage (Bina OTP ke aage nahi badhega)
+            const otp = document.getElementById('otpInput').value.trim();
+            if(otp !== '1234') {
+                alert(currentLang === 'hi' ? 'Galat OTP! Kripya sahi OTP (1234) darj karein.' : 'Invalid OTP! Please enter correct OTP (1234).');
+                return;
+            }
+
+            // Successfully Verified & Registered
+            document.getElementById('displayUserName').innerText = name;
+            document.getElementById('loginView').classList.add('hidden');
+            alert(currentLang === 'hi' ? 'Registration Safal Rahi! Swagat hai.' : 'Registration Successful! Welcome.');
+        }
+
         function calculateFare() {
             const dropVal = document.getElementById('dropInput').value;
-            // Agar user kuch lamba drop likhe to distance thoda badha do, nahi to default rakho
             if(dropVal.length > 3) {
                 currentDistance = Math.min(15, (4.0 + dropVal.length * 0.3)).toFixed(1);
             } else {
                 currentDistance = 4.5;
             }
-            
             document.getElementById('distanceText').innerText = currentDistance + ' km';
-            
-            // Calculate final fare based on vehicle rate per km
             calculatedFare = Math.round(currentDistance * ratePerKm);
             document.getElementById('totalFareDisplay').innerText = '₹' + calculatedFare;
-
-            if(currentMode === 'Bike') {
-                document.getElementById('bikePriceDisplay').innerText = '₹' + Math.round(currentDistance * 10);
-                document.getElementById('autoPriceDisplay').innerText = '₹' + Math.round(currentDistance * 18);
-            }
         }
 
         function selectRideMode(mode, rate) {
             currentMode = mode;
             ratePerKm = rate;
             calculateFare();
-
-            document.getElementById('btnRideName').innerText = 'Pro ' + mode;
-
-            const cards = document.querySelectorAll('.ride-card');
-            cards.forEach(c => { c.classList.remove('border-brand', 'bg-yellow-50/40'); c.classList.add('border-gray-200', 'bg-white'); });
-            event.currentTarget.classList.remove('border-gray-200', 'bg-white');
-            event.currentTarget.classList.add('border-brand', 'bg-yellow-50/40');
+            document.getElementById('bookBtnText').innerText = currentLang === 'hi' ? `Book Pro ${mode} Now` : `Book Pro ${mode} Now`;
         }
 
         function startSearching() {
             const drop = document.getElementById('dropInput').value;
-            if(!drop) { alert('Kripya pehle drop location enter karein!'); return; }
+            if(!drop) { 
+                alert(currentLang === 'hi' ? 'Kripya drop location enter karein!' : 'Please enter drop location!'); 
+                return; 
+            }
 
             document.getElementById('bookingView').classList.add('hidden');
             document.getElementById('searchingView').classList.remove('hidden');
@@ -349,47 +400,25 @@
         function initMap() {
             if (!map) {
                 map = L.map('map').setView([25.5941, 85.1376], 14);
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '&copy; Ride Pro fix Maps'
-                }).addTo(map);
-                L.marker([25.5941, 85.1376]).addTo(map).bindPopup('Captain aapke paas hai!').openPopup();
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+                L.marker([25.5941, 85.1376]).addTo(map).bindPopup('Captain').openPopup();
             } else {
                 map.invalidateSize();
             }
         }
 
-        // Driver Wallet Deduction Feature
         function completeRide() {
-            if(userWallet >= calculatedFare) {
-                userWallet -= calculatedFare;
-                alert('Ride successful! ₹' + calculatedFare + ' aapke Pro fix wallet se successfully deduct ho gaye hain.');
-            } else {
-                alert('Ride successful! Cash/UPI ke madhyam se ₹' + calculatedFare + ' driver ko pay karein.');
-            }
-            updateWalletUI();
-
+            userWallet = Math.max(0, userWallet - calculatedFare);
+            document.getElementById('walletDisplay').innerText = '₹' + userWallet;
+            document.getElementById('walletModalBalance').innerText = '₹' + userWallet;
             document.getElementById('activeRideView').classList.add('hidden');
             document.getElementById('ratingView').classList.remove('hidden');
         }
 
-        function updateWalletUI() {
-            document.getElementById('walletDisplay').innerText = '₹' + userWallet;
-            document.getElementById('walletModalBalance').innerText = '₹' + userWallet;
-        }
-
         function openWalletModal() { document.getElementById('walletModal').classList.remove('hidden'); }
         function closeWalletModal() { document.getElementById('walletModal').classList.add('hidden'); }
-        
-        function addMoney() {
-            userWallet += 100;
-            updateWalletUI();
-            alert('₹100 successfully wallet me add ho gaye!');
-            closeWalletModal();
-        }
-
-        function openReferralModal() { document.getElementById('referralModal').classList.remove('hidden'); }
-        function closeReferralModal() { document.getElementById('referralModal').classList.add('hidden'); }
-
+        function addMoney() { userWallet += 100; document.getElementById('walletDisplay').innerText = '₹' + userWallet; alert('₹100 added!'); closeWalletModal(); }
+        function openReferralModal() { alert('Referral Code: PROFIX99 (Share & Earn)'); }
         function resetApp() {
             document.getElementById('ratingView').classList.add('hidden');
             document.getElementById('bookingView').classList.remove('hidden');
